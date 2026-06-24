@@ -15,9 +15,11 @@ export default function Navbar() {
           </Link>
 
           <nav className="flex gap-6 items-center">
-            <Link to="/">Home</Link>
+            <Link to="/" >Home</Link>
 
-            <Link to="/marketplace">
+            <Link to="/marketplace"
+             className="px-4 py-2 border rounded-lg bg-orange-500 text-white"
+            >
               Marketplace
             </Link>
 
@@ -26,6 +28,9 @@ export default function Navbar() {
               className="px-4 py-2 border rounded-lg"
             >
               Login
+            </Link>
+
+            <Link to="/profile" className="hover:text-amber-700">Profile
             </Link>
 
             <Link
