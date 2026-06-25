@@ -5,7 +5,9 @@ import {
   where,
   getDocs,
   doc,
+  addDoc,
   updateDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 
 import { db } from "../services/firebase";
@@ -19,6 +21,11 @@ export default function Requests() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!user?.uid) {
+      setLoading(false);
+      return;
+    }
+
     const fetchRequests = async () => {
       try {
         // Incoming Requests
@@ -27,12 +34,15 @@ export default function Requests() {
           where("receiverId", "==", user.uid)
         );
 
-        const incomingSnapshot = await getDocs(incomingQuery);
+        const incomingSnapshot = await getDocs(
+          incomingQuery
+        );
 
-        const incomingData = incomingSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const incomingData =
+          incomingSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
 
         setIncomingRequests(incomingData);
 
@@ -42,47 +52,105 @@ export default function Requests() {
           where("senderId", "==", user.uid)
         );
 
-        const sentSnapshot = await getDocs(sentQuery);
+        const sentSnapshot = await getDocs(
+          sentQuery
+        );
 
-        const sentData = sentSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const sentData =
+          sentSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
 
         setSentRequests(sentData);
       } catch (error) {
-        console.error(error);
+        console.error("Request Error:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    if (user) {
-      fetchRequests();
-    }
+    fetchRequests();
   }, [user]);
 
-  const updateStatus = async (requestId, status) => {
-    try {
-      await updateDoc(
-        doc(db, "exchangeRequests", requestId),
+  const updateStatus = async (request, status) => {
+  try {
+    // Update request status
+    await updateDoc(
+      doc(db, "exchangeRequests", request.id),
+      {
+        status,
+      }
+    );
+
+    // Create chat when accepted
+    if (status === "accepted") {
+      await addDoc(
+        collection(db, "chats"),
         {
-          status,
+          participants: [
+            request.senderId,
+            request.receiverId,
+          ],
+
+          participantNames: {
+            [request.senderId]:
+              request.senderEmail,
+
+            [request.receiverId]:
+              request.receiverEmail ||
+              "Listing Owner",
+          },
+
+          lastMessage: "",
+
+          createdAt: serverTimestamp(),
+
+          updatedAt: serverTimestamp(),
         }
       );
-
-      setIncomingRequests((prev) =>
-        prev.map((request) =>
-          request.id === requestId
-            ? { ...request, status }
-            : request
-        )
-      );
-    } catch (error) {
-      console.error(error);
-      alert(error.message);
     }
-  };
+
+    // Notify sender
+    await addDoc(
+      collection(db, "notifications"),
+      {
+        userId: request.senderId,
+
+        title: "Request Updated",
+
+        message:
+          status === "accepted"
+            ? `Your request for ${request.threadType} was accepted. You can now start chatting.`
+            : `Your request for ${request.threadType} was declined.`,
+
+        isRead: false,
+
+        createdAt: serverTimestamp(),
+      }
+    );
+
+    // Update UI
+    setIncomingRequests((prev) =>
+      prev.map((item) =>
+        item.id === request.id
+          ? { ...item, status }
+          : item
+      )
+    );
+
+    setSentRequests((prev) =>
+      prev.map((item) =>
+        item.id === request.id
+          ? { ...item, status }
+          : item
+      )
+    );
+  } catch (error) {
+    console.error(error);
+    alert(error.message);
+  }
+};
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -108,8 +176,7 @@ export default function Requests() {
   return (
     <div className="min-h-screen bg-stone-100 p-6">
       <div className="max-w-6xl mx-auto">
-
-        {/* Page Header */}
+        {/* Header */}
         <div className="mb-10">
           <h1 className="text-4xl font-bold">
             Exchange Requests
@@ -138,14 +205,12 @@ export default function Requests() {
                   className="bg-white rounded-xl p-6 shadow-sm"
                 >
                   <div className="flex flex-col md:flex-row md:justify-between gap-6">
-
                     <div>
                       <h3 className="font-semibold text-lg">
                         From: {request.senderEmail}
                       </h3>
 
                       <div className="mt-3 space-y-1 text-sm">
-
                         <p>
                           <strong>Thread:</strong>{" "}
                           {request.threadType}
@@ -158,7 +223,8 @@ export default function Requests() {
 
                         <p>
                           <strong>Quantity:</strong>{" "}
-                          {request.quantity} {request.unit}
+                          {request.quantity}{" "}
+                          {request.unit}
                         </p>
 
                         <p>
@@ -190,12 +256,13 @@ export default function Requests() {
                       </span>
                     </div>
 
-                    {request.status === "pending" && (
+                    {request.status ===
+                      "pending" && (
                       <div className="flex gap-3">
                         <button
                           onClick={() =>
                             updateStatus(
-                              request.id,
+                              request,
                               "accepted"
                             )
                           }
@@ -207,7 +274,7 @@ export default function Requests() {
                         <button
                           onClick={() =>
                             updateStatus(
-                              request.id,
+                              request,
                               "declined"
                             )
                           }
@@ -246,7 +313,6 @@ export default function Requests() {
                   </h3>
 
                   <div className="mt-3 space-y-1 text-sm">
-
                     <p>
                       <strong>Thread:</strong>{" "}
                       {request.threadType}
@@ -259,14 +325,14 @@ export default function Requests() {
 
                     <p>
                       <strong>Quantity:</strong>{" "}
-                      {request.quantity} {request.unit}
+                      {request.quantity}{" "}
+                      {request.unit}
                     </p>
 
                     <p>
                       <strong>Listing Type:</strong>{" "}
                       {request.listingType}
                     </p>
-
                   </div>
 
                   <span
@@ -281,7 +347,6 @@ export default function Requests() {
             </div>
           )}
         </section>
-
       </div>
     </div>
   );

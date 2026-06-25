@@ -12,6 +12,9 @@ import Requests from "./pages/Requests";
 import Profile from "./pages/Profile";
 import MyListings from "./pages/MyListings";
 import EditListing from "./pages/EditListing";
+import Notifications from "./pages/Notifications";
+import Chats from "./pages/Chats";
+import ChatRoom from "./pages/ChatRoom";
 
 function App() {
   return (
@@ -27,6 +30,9 @@ function App() {
         <Route path="/requests" element={<ProtectedRoute><Requests /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/my-listings" element={<ProtectedRoute><MyListings /></ProtectedRoute>} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/chats" element={<Chats />} />
+        <Route path="/chat/:id" element={<ChatRoom />} />
         <Route path="/edit-listing/:id" element={<ProtectedRoute><EditListing /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>

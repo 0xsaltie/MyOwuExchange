@@ -90,9 +90,24 @@ export default function MyListings() {
         </div>
 
         {listings.length === 0 ? (
-          <div className="bg-white p-8 rounded-2xl shadow-sm">
-            You have not created any listings yet.
-          </div>
+          <div className="text-center py-10">
+                  <div className="text-5xl mb-4">🧵</div>
+
+                  <h3 className="text-xl font-bold">
+                    No Listings Yet
+                  </h3>
+
+                  <p className="text-gray-500 mt-2">
+                    Create your first Owu listing.
+                  </p>
+
+                  <Link
+                    to="/add-listing"
+                    className="inline-block mt-4 bg-amber-700 text-white px-5 py-3 rounded-lg"
+                  >
+                    Add Listing
+                  </Link>
+                </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
@@ -119,11 +134,15 @@ export default function MyListings() {
 
                    <div>
                       <span
-                        className={`px-3 py-1 rounded-full text-sm ${
-                       listing.status === "available"
-                     ? "bg-green-100 text-green-700"
-                    : "bg-gray-100 text-gray-700"
-                      }`}
+                       className={`px-3 py-1 rounded-full text-sm ${
+                          listing.status === "available"
+                          ? "bg-green-100 text-green-700"
+                            : listing.status === "sold"
+                            ? "bg-blue-100 text-blue-700"
+                            : listing.status === "exchanged"
+                            ? "bg-purple-100 text-purple-700"
+                            : "bg-gray-100 text-gray-700"
+}`}
                 >
                      {listing.status}
                    </span>
@@ -135,7 +154,18 @@ export default function MyListings() {
                   </p>
 
                 </div>
+                      {listing.listingType === "exchange" && (
+                     <p>
+                        <strong>Needs:</strong> {listing.desiredThread}
+                    </p>
+                    )}
 
+                      {listing.listingType === "sale" && (
+                      <p>
+                    <strong>Price:</strong> ₦
+                      {listing.price?.toLocaleString()}
+                      </p>
+                          )}
                 <div className="mt-6 flex gap-3">
 
                   <Link

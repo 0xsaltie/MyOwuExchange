@@ -18,13 +18,15 @@ export default function EditListing() {
   const [loading, setLoading] = useState(true);
 
   const [formData, setFormData] = useState({
-    threadType: "",
-    color: "",
-    quantity: "",
-    desiredThread: "",
-    price: "",
-    listingType: "exchange",
-  });
+      threadType: "",
+      color: "",
+      quantity: "",
+      unit: "cones",
+      listingType: "exchange",
+      desiredThread: "",
+      price: "",
+      status: "available",
+    });
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -52,6 +54,8 @@ export default function EditListing() {
           desiredThread: listingData.desiredThread || "",
           price: listingData.price || "",
           listingType: listingData.listingType || "exchange",
+          unit: listingData.unit || "cones",
+          status: listingData.status || "available",
         });
       } catch (error) {
         console.error(error);
@@ -78,21 +82,23 @@ export default function EditListing() {
 
     try {
       await updateDoc(doc(db, "listings", id), {
-        threadType: formData.threadType,
-        color: formData.color,
-        quantity: Number(formData.quantity),
+            threadType: formData.threadType,
+            color: formData.color,
+            quantity: Number(formData.quantity),
+            listingType: formData.listingType,
+            unit: formData.unit,
+            status: formData.status,
 
-        desiredThread:
-          formData.listingType === "exchange"
-            ? formData.desiredThread
-            : null,
+            desiredThread:
+              formData.listingType === "exchange"
+                ? formData.desiredThread
+                : null,
 
-        price:
-          formData.listingType === "sale"
-            ? Number(formData.price)
-            : null,
-      });
-
+            price:
+              formData.listingType === "sale"
+                ? Number(formData.price)
+                : null,
+          });
       alert("Listing updated successfully!");
 
       navigate("/my-listings");
@@ -170,6 +176,44 @@ export default function EditListing() {
               className="w-full border rounded-lg px-4 py-3"
             />
           </div>
+                 <div>
+                      <label className="block mb-2 font-medium">
+                        Listing Type
+                      </label>
+
+                      <select
+                        name="listingType"
+                        value={formData.listingType}
+                        onChange={handleChange}
+                        className="w-full border rounded-lg px-4 py-3"
+                      >
+                        <option value="exchange">
+                          Exchange (Paṣípààrọ̀)
+                        </option>
+
+                        <option value="sale">
+                          Sale (Tita)
+                        </option>
+                      </select>
+                    </div>
+         {/* Unit */}
+         <div>
+              <label className="block mb-2 font-medium">
+                Unit
+              </label>
+
+              <select
+                name="unit"
+                value={formData.unit}
+                onChange={handleChange}
+                className="w-full border rounded-lg px-4 py-3"
+              >
+                <option value="cones">Cones</option>
+                <option value="rolls">Rolls</option>
+                <option value="pieces">Pieces</option>
+                <option value="kg">Kg</option>
+              </select>
+            </div>
 
           {/* Desired Thread */}
           {formData.listingType === "exchange" && (
@@ -204,7 +248,27 @@ export default function EditListing() {
               />
             </div>
           )}
+          {/* Status */}  
+                  <div>
+          <label className="block mb-2 font-medium">
+            Status
+          </label>
 
+          <select
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+            className="w-full border rounded-lg px-4 py-3"
+          >
+            <option value="available">
+              Available
+            </option>
+
+            <option value="unavailable">
+              Unavailable
+            </option>
+          </select>
+        </div>
           <button
             type="submit"
             className="w-full bg-amber-700 hover:bg-amber-800 text-white py-3 rounded-lg transition"
