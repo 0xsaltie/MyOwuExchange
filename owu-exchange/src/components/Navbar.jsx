@@ -15,27 +15,29 @@ export default function Navbar() {
           </Link>
 
           <nav className="flex gap-6 items-center">
-            <Link to="/" >Home</Link>
+            <Link to="/" className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white shadow-lg transition hover:-translate-y-1 hover:bg-orange-600 hover:shadow-xl">
+            Home</Link>
 
             <Link to="/marketplace"
-             className="px-4 py-2 border rounded-lg bg-orange-500 text-white"
+             className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white shadow-lg transition hover:-translate-y-1 hover:bg-orange-600 hover:shadow-xl"
             >
               Marketplace
             </Link>
 
             <Link
               to="/login"
-              className="px-4 py-2 border rounded-lg"
+              className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white shadow-lg transition hover:-translate-y-1 hover:bg-orange-600 hover:shadow-xl"
             >
               Login
             </Link>
 
-            <Link to="/profile" className="hover:text-amber-700">Profile
+            <Link to="/profile" className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white shadow-lg transition hover:-translate-y-1 hover:bg-orange-600 hover:shadow-xl">
+              Profile
             </Link>
 
             <Link
               to="/signup"
-              className="px-4 py-2 rounded-lg bg-black text-white"
+              className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white shadow-lg transition hover:-translate-y-1 hover:bg-orange-600 hover:shadow-xl"
             >
               Join
             </Link>
