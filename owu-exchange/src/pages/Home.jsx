@@ -328,7 +328,7 @@ export default function Home() {
 
       <Link
         to="/signup"
-        className="rounded-xl bg-white px-8 py-4 font-semibold text-orange-600 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+        className="rounded-xl bg-white px-8 py-4 font-semibold text-orange-500 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       >
         Become a Weaver
       </Link>
