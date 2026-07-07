@@ -194,9 +194,11 @@ export default function Requests() {
           </h2>
 
           {incomingRequests.length === 0 ? (
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              No incoming requests.
-            </div>
+            <EmptyState
+              icon="📥"
+              title="No Incoming Requests"
+              message="Nobody has requested your threads yet."
+/>
           ) : (
             <div className="space-y-4">
               {incomingRequests.map((request) => (
@@ -298,9 +300,11 @@ export default function Requests() {
           </h2>
 
           {sentRequests.length === 0 ? (
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              No sent requests.
-            </div>
+            <EmptyState
+              icon="📤"
+              title="No Sent Requests"
+              message="You haven't requested any threads yet."
+/>
           ) : (
             <div className="space-y-4">
               {sentRequests.map((request) => (

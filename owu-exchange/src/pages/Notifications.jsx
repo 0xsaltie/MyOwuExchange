@@ -97,9 +97,11 @@ return (
       </div>
 
       {notifications.length === 0 ? (
-        <div className="bg-white p-8 rounded-2xl shadow-sm">
-          No notifications yet.
-        </div>
+        <EmptyState
+          icon="🔔"
+          title="No Notifications"
+          message="You're all caught up!"
+        />
       ) : (
         <div className="space-y-4">
           {notifications.map((notification) => (

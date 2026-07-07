@@ -91,11 +91,11 @@ export default function MyListings() {
 
         {listings.length === 0 ? (
           <div className="text-center py-10">
-                  <div className="text-5xl mb-4">🧵</div>
-
-                  <h3 className="text-xl font-bold">
-                    No Listings Yet
-                  </h3>
+                 <EmptyState
+                  icon="🧶"
+                  title="No Listings Yet"
+                  message="Create your first thread listing to start exchanging."
+                />
 
                   <p className="text-gray-500 mt-2">
                     Create your first Owu listing.
