@@ -15,6 +15,8 @@ import EditListing from "./pages/EditListing";
 import Notifications from "./pages/Notifications";
 import Chats from "./pages/Chats";
 import ChatRoom from "./pages/ChatRoom";
+import EditProfile from "./pages/EditProfile";
+import ListingDetails from "./pages/ListingDetails";
 
 function App() {
   return (
@@ -28,12 +30,14 @@ function App() {
         <Route path="/test" element={<TestAuth />} />
         <Route path="/add-listing" element={<ProtectedRoute><AddListing /></ProtectedRoute>} />
         <Route path="/requests" element={<ProtectedRoute><Requests /></ProtectedRoute>} />
-        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/my-listings" element={<ProtectedRoute><MyListings /></ProtectedRoute>} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/chats" element={<Chats />} />
         <Route path="/chat/:id" element={<ChatRoom />} />
         <Route path="/edit-listing/:id" element={<ProtectedRoute><EditListing /></ProtectedRoute>} />
+        <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+        <Route path="/listingdetails/:id" element={<ListingDetails />} />  
       </Routes>
     </BrowserRouter>
   );

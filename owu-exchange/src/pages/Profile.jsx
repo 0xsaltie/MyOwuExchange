@@ -1,35 +1,65 @@
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { useParams } from "react-router-dom";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 
 import { db } from "../services/firebase";
-import { useAuth } from "../context/AuthContext";
+import ProfileHeader from "../components/ProfileHeader";
+import ProfileStats from "../components/ProfileStats";
+import ProfileListings from "../components/ProfileListings";
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { id } = useParams();
 
   const [profile, setProfile] = useState(null);
+  const [listings, setListings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const userRef = doc(db, "users", user.uid);
-
+        // Fetch user profile
+        const userRef = doc(db, "users", id);
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-          setProfile(userSnap.data());
+          setProfile({
+            id: userSnap.id,
+            ...userSnap.data(),
+          });
         }
+
+        // Fetch user's listings
+        const listingsQuery = query(
+          collection(db, "listings"),
+          where("ownerId", "==", id)
+        );
+
+        const listingsSnapshot = await getDocs(listingsQuery);
+
+        const listingsData = listingsSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setListings(listingsData);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (user) {
-      fetchProfile();
-    }
-  }, [user]);
+    fetchProfile();
+  }, [id]);
 
-  if (!profile) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         Loading Profile...
@@ -37,58 +67,31 @@ export default function Profile() {
     );
   }
 
+  if (!profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        User not found.
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-stone-100 p-6">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm p-8">
+    <div className="min-h-screen bg-stone-100 py-8">
+      <div className="max-w-6xl mx-auto px-6">
 
-        <div className="text-center">
+        <ProfileHeader profile={profile} />
 
-          <div className="w-24 h-24 mx-auto rounded-full bg-amber-700 text-white flex items-center justify-center text-3xl font-bold">
-            {profile.fullName?.charAt(0)}
-          </div>
-
-          <h1 className="text-3xl font-bold mt-4">
-            {profile.fullName}
-          </h1>
-
-          <p className="text-gray-500">
-            Weaver • Aláso-oke Enthusiast
-          </p>
-
+        <div className="mt-8">
+          <ProfileStats
+            profile={profile}
+            listings={listings}
+          />
         </div>
 
-        <div className="mt-10 space-y-5">
-
-          <div className="border rounded-xl p-4">
-            <p className="text-gray-500 text-sm">
-              Email
-            </p>
-
-            <p className="font-medium">
-              {profile.email}
-            </p>
-          </div>
-
-          <div className="border rounded-xl p-4">
-            <p className="text-gray-500 text-sm">
-              Phone Number
-            </p>
-
-            <p className="font-medium">
-              {profile.phone}
-            </p>
-          </div>
-
-          <div className="border rounded-xl p-4">
-            <p className="text-gray-500 text-sm">
-              Location
-            </p>
-
-            <p className="font-medium">
-              📍 {profile.location}
-            </p>
-          </div>
-
+        <div className="mt-10">
+          <ProfileListings
+            listings={listings}
+          />
         </div>
 
       </div>

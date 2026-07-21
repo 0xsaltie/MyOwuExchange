@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 import { auth, db } from "../services/firebase";
+import Footer from "../components/Footer";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function Signup() {
     phone: "",
     email: "",
     password: "",
+    area: "",
     location: "Iseyin",
   });
 
@@ -46,6 +48,7 @@ export default function Signup() {
         fullName: formData.fullName,
         phone: formData.phone,
         email: formData.email,
+        area: formData.area,
         location: formData.location,
         role: "weaver",
         createdAt: serverTimestamp(),
@@ -60,8 +63,10 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-100 flex items-center justify-center px-4">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8">
+    <>
+    <main>
+      <div className="min-h-screen bg-stone-100 flex items-center justify-center px-4">
+        <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8">
 
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold">
@@ -88,6 +93,22 @@ export default function Signup() {
               onChange={handleChange}
               className="w-full border rounded-lg px-4 py-3"
               placeholder="Enter your full name"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2 font-medium">
+              Area (Agbegbe)
+            </label>
+
+            <input
+              type="text"
+              name="area"
+              required
+              value={formData.area}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-4 py-3"
+              placeholder="Enter your area"
             />
           </div>
 
@@ -160,5 +181,9 @@ export default function Signup() {
 
       </div>
     </div>
+    </main>
+
+    <Footer />
+    </>
   );
 }

@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import Container from "./Container";
 
 export default function Navbar() {
+  const { user } = useAuth();
+
   return (
     <header className="sticky top-0 bg-white border-b z-50">
       <Container>
@@ -31,9 +34,14 @@ export default function Navbar() {
               Login
             </Link>
 
-            <Link to="/profile" className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white shadow-lg transition hover:-translate-y-1 hover:bg-orange-600 hover:shadow-xl">
-              Profile
-            </Link>
+            {user && (
+              <Link
+                to={`/profile/${user.uid}`}
+                className="rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white shadow-lg transition hover:-translate-y-1 hover:bg-orange-600 hover:shadow-xl"
+              >
+                Profile
+              </Link>
+            )}    
 
             <Link
               to="/signup"

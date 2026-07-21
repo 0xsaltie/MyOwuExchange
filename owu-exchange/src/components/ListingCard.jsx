@@ -1,14 +1,27 @@
+import { Link } from "react-router-dom";
+
 export default function ListingCard({
   listing,
   user,
   handleRequestExchange,
 }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition overflow-hidden">
-      {/* Image */}
-      <div className="h-48 bg-gradient-to-br from-amber-100 to-orange-200 flex items-center justify-center">
-        <span className="text-6xl">🧵</span>
-      </div>
+    <Link to={`/listingdetails/${listing.id}`}>
+      <div className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition overflow-hidden">
+        {/* Image */}
+        <div className="h-48 overflow-hidden">
+          {listing.coverImage ? (
+            <img
+                src={listing.coverImage}
+                alt={listing.threadType}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="h-full bg-gradient-to-br from-amber-100 to-orange-200 flex items-center justify-center">
+                <span className="text-6xl">🧵</span>
+              </div>
+            )}
+          </div>
 
       {/* Content */}
       <div className="p-6">
@@ -73,9 +86,12 @@ export default function ListingCard({
 
         {/* Owner */}
         <div className="mt-6 border-t pt-4">
-          <p className="font-semibold text-lg">
-            👤 {listing.ownerName || "Unknown Weaver"}
-          </p>
+          <Link
+              to={`/profile/${listing.ownerId}`}
+              className="font-semibold text-lg hover:text-amber-700"
+            >
+              <Userplus /> {listing.ownerName || "Unknown Weaver"}
+            </Link>
 
           <p className="text-sm text-gray-500">
             📍 {listing.ownerLocation || "Iseyin"}
@@ -100,5 +116,6 @@ export default function ListingCard({
         </button>
       </div>
     </div>
+    </Link>
   );
 }

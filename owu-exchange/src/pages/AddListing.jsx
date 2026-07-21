@@ -8,13 +8,15 @@ import {
 } from "firebase/firestore";
 
 import { db } from "../services/firebase";
+import ImageUpload from "../components/ImageUpload";
+import MultiImageUpload from "../components/MultiImageUpload";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function AddListing() {
   const { user } = useAuth();
   const navigate = useNavigate();
-
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
 
@@ -73,6 +75,8 @@ export default function AddListing() {
         ownerPhone: userProfile.phone,
         ownerLocation: userProfile.location,
 
+        images: images,
+                coverImage: images[0] || "",
         threadType: formData.threadType,
         color: formData.color,
         quantity: Number(formData.quantity),
@@ -130,6 +134,11 @@ export default function AddListing() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
+          <MultiImageUpload
+            images={images}
+            setImages={setImages}
+          />
+
           <div>
             <label className="block mb-2 font-medium">
               Thread Type (Iru Owu)
@@ -167,7 +176,7 @@ export default function AddListing() {
 
           <div>
             <label className="block mb-2 font-medium">
-              Quantity (Iye)
+              Quantity (Iye/Ekun)
             </label>
 
             <input

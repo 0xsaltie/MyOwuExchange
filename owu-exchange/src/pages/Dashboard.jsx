@@ -255,6 +255,16 @@ export default function Dashboard() {
               + Add Owu Listing
             </Link>
 
+            
+            {user && (
+            <Link
+              to={`/profile/${user.uid}`}
+              className="px-6 py-3 bg-amber-700 text-white rounded-lg hover:bg-amber-800 transition"
+            >
+              My
+              Profile
+            </Link>
+          )}
             <Link
               to="/marketplace"
               className="px-6 py-3 bg-amber-700 text-white rounded-lg hover:bg-amber-800 transition"
@@ -289,7 +299,7 @@ export default function Dashboard() {
               >
                 Notifications
               </Link>
-                
+ +               
           </div>
         </div>
 
